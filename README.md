@@ -20,22 +20,21 @@ client/   React 19 + Vite + Tailwind CSS 4 (customer UI + admin UI, routed separ
 server/   Express 5 + Mongoose REST API (MongoDB)
 ```
 
-## Run it
+## Run it — one command
 
-**Backend** (from `server/`):
+From the project root (first time only: `npm install` here, plus `npm run install:all` to install server & client deps):
 
 ```bash
-cp .env.example .env        # already done — edit MONGO_URI / ADMIN_PASSWORD as needed
-npm run dev:memory          # zero-setup: in-memory MongoDB, menu auto-seeded (18 items)
-# or, with real MongoDB/Atlas:
 npm run dev
 ```
 
-**Frontend** (from `client/`, second terminal):
+Runs the Express API with an in-memory MongoDB **and** the Vite frontend together (via `concurrently`).
+On Windows you can also just double-click **`run-dev.bat`** — same thing. Press `Ctrl+C` in the terminal to stop both.
+
+With a real MongoDB (local install or Atlas connection string in `server/.env`):
 
 ```bash
-npm install
-npm run dev
+npm run dev:mongo
 ```
 
 Open the customer site (home page shows the kitchen live/closed banner), place an order, then open `/admin` and sign in.

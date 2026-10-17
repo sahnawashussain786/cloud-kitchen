@@ -1,0 +1,14 @@
+{
+  "name": "shahnaz-kitchen",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cloud kitchen website for Shahnaz Kitchen (MERN + Tailwind)",
+  "scripts": {
+    "dev": "concurrently -n server,client -c yellow,cyan \"npm run dev:memory --prefix server\" \"npm run dev --prefix client\"",
+    "dev:mongo": "concurrently -n server,client -c yellow,cyan \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "install:all": "npm install --prefix server && npm install --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
