@@ -46,5 +46,6 @@ Set as `ADMIN_PASSWORD` in `server/.env` — default `shahnaz123`. Change it bef
 ## Notes
 
 - Prices are re-checked server-side on every order so the client cannot submit fake prices.
-- Sorry — no real payment gateway: "online" is recorded as a payment choice; hook up Stripe/easypaisa later at checkout.
+- **Online payment is a demo gateway**: checkout opens a card form (auto-formatting, spinner, receipt), `POST /api/payments` validates the card and marks the order paid with a receipt number. No real money moves — swap this one endpoint for Stripe/easypaisa for production. Unpaid online orders can be paid later from the tracking page; the admin sees the paid receipt on every order.
+- **Live kitchen status**: the customer site polls the settings API every 5 s — flipping the admin switch acts on the customer banner and checkout within seconds, no reload needed.
 - Dev-mode uses an ephemeral database; all test orders are wiped when the server restarts.

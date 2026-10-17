@@ -1,5 +1,47 @@
 @import "tailwindcss";
 
+@theme {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Sober palette: warm cream, walnut, and a muted terracotta accent */
+  --color-cream: #faf7f2;
+  --color-walnut: #3f2d1e;
+  --color-walnut-deep: #2c2117;
+  --color-clay: #c2622d;
+}
+
 body {
-  @apply bg-stone-100 text-stone-800 antialiased;
+  background-color: var(--color-cream);
+  color: color-mix(in oklab, var(--color-walnut) 85%, black);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Refined scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6c9b8;
+  border-radius: 8px;
+  border: 2px solid var(--color-cream);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c2b3a0;
+}
+
+/* Pulsing live dot */
+@keyframes livePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 7px rgba(74, 222, 128, 0);
+  }
+}
+.live-dot {
+  animation: livePulse 2s ease-out infinite;
 }

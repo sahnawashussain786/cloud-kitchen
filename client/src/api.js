@@ -29,6 +29,7 @@ export const api = {
   getSettings: () => request('/api/settings'),
   placeOrder: (payload) => request('/api/orders', { method: 'POST', body: payload }),
   trackOrder: (code) => request(`/api/orders/${encodeURIComponent(code)}`),
+  payOrder: (payload) => request('/api/payments', { method: 'POST', body: payload }),
 
   adminLogin: (password) =>
     request('/api/admin/login', { method: 'POST', body: { password } }),

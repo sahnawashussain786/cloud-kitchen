@@ -96,6 +96,40 @@ publicRoutes.get('/orders/:code', async (req, res) => {
   res.json(order)
 })
 
+// ---------- Public: dummy online payment gateway ----------
+// A simulated payment gateway for demo purposes — no real money moves.
+// It validates the card format, pretends to process for a moment, and
+// then marks the order as paid with a receipt number.
+function cardCheck({ cardNumber, cardName, expiry, cvc }) {
+  const digits = String(cardNumber || '').replace(/\D/g, '')
+  if (digits.length < 15 || digits.length > 16) return 'Card number must be 15–16 digits.'
+  if (!String(cardName || '').trim()) return 'Name on card is required.'
+  if (!/^(0[1-9]|1[0-2])\/?\d{2}$/.test(String(expiry || '').trim())) return 'Expiry must be MM/YY.'
+  if (!/^\d{3,4}$/.test(String(cvc || '').trim())) return 'CVC must be 3 or 4 digits.'
+  return ''
+}
+
+publicRoutes.post('/payments', async (req, res) => {
+  const { code, cardNumber, cardName, expiry, cvc } = req.body || {}
+  const order = await Order.findOne({ code: String(code || '').toUpperCase() })
+  if (!order) return res.status(404).json({ error: 'Order not found.' })
+  if (order.payment !== 'online') return res.status(400).json({ error: 'This order is set for cash payment.' })
+  if (order.status === 'rejected') return res.status(400).json({ error: 'This order was rejected and cannot be paid.' })
+  if (order.paid) return res.status(409).json({ error: `This order is already paid (receipt ${order.receiptNo}).` })
+
+  const problem = cardCheck({ cardNumber, cardName, expiry, cvc })
+  if (problem) return res.status(400).json({ error: problem })
+
+  // Simulate network + bank processing latency
+  await new Promise((resolve) => setTimeout(resolve, 1500))
+
+  order.paid = true
+  order.paidAt = new Date()
+  order.receiptNo = 'RCP-' + crypto.randomBytes(3).toString('hex').toUpperCase()
+  await order.save()
+  res.json({ paid: true, receiptNo: order.receiptNo, paidAt: order.paidAt, amount: order.total })
+})
+
 // ---------- Admin: menu management ----------
 
 adminRoutes.post('/menu', async (req, res) => {

@@ -10,7 +10,15 @@ export default function AdminApp() {
   const [checking, setChecking] = useState(false)
 
   if (password) {
-    return <AdminDashboard password={password} onSignOut={() => { localStorage.removeItem('sk-admin-pass'); setPassword('') }} />
+    return (
+      <AdminDashboard
+        password={password}
+        onSignOut={() => {
+          localStorage.removeItem('sk-admin-pass')
+          setPassword('')
+        }}
+      />
+    )
   }
 
   const login = async (e) => {
@@ -28,20 +36,23 @@ export default function AdminApp() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-stone-900 px-4">
-      <form onSubmit={login} className="w-full max-w-sm rounded-xl bg-white p-8 shadow-2xl">
-        <h1 className="text-xl font-bold text-stone-800">🔐 Shahnaz Kitchen — Admin</h1>
-        <p className="mt-1 mb-6 text-sm text-stone-500">Sign in to manage orders and kitchen settings.</p>
+    <div className="flex min-h-screen items-center justify-center bg-walnut-deep px-4">
+      <form onSubmit={login} className="w-full max-w-sm rounded-2xl bg-cream p-8 shadow-2xl">
+        <p className="text-4xl">🍽</p>
+        <h1 className="mt-3 font-display text-2xl font-semibold text-walnut">
+          Shahnaz Kitchen <span className="text-clay">— Admin</span>
+        </h1>
+        <p className="mt-1 mb-6 text-sm text-stone-500">The kitchen owner&apos;s private dashboard.</p>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Admin password"
           autoFocus
-          className="mb-3 w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-amber-600 focus:outline-none"
+          className="mb-3 w-full rounded-xl border border-stone-200 bg-white px-3 py-2.5 focus:border-clay focus:outline-none"
         />
-        {loginError && <p className="mb-3 text-sm text-red-700">{loginError}</p>}
-        <button type="submit" disabled={checking || !password} className="w-full rounded-lg bg-amber-700 py-2 font-semibold text-white hover:bg-amber-600 disabled:bg-stone-300">
+        {loginError && <p className="mb-3 rounded-xl bg-red-900/10 p-2.5 text-sm text-red-800">{loginError}</p>}
+        <button type="submit" disabled={checking || !password} className="w-full rounded-xl bg-walnut py-2.5 font-semibold text-cream transition hover:bg-walnut-deep disabled:bg-stone-300">
           {checking ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
