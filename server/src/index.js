@@ -20,6 +20,9 @@ mongoose
   .then(async () => {
     console.log('Connected to MongoDB.')
     await seedIfEmpty()
+    // Ensure the 24h auto-delete TTL index exists on orders
+    const { Order } = await import('./models/Order.js')
+    await Order.ensureIndexes()
     app.listen(PORT, () => console.log(`Shahnaz Kitchen API listening on http://localhost:${PORT}`))
   })
   .catch((err) => {

@@ -22,5 +22,9 @@ app.use('/api/admin', adminRoutes)
 await mongoose.connect(mongod.getUri())
 await seedIfEmpty()
 
+// Ensure the 24h auto-delete TTL index exists on orders
+const { Order } = await import('./models/Order.js')
+await Order.ensureIndexes()
+
 const PORT = process.env.PORT || 4000
 app.listen(PORT, () => console.log(`Shahnaz Kitchen API (memory mode) on http://localhost:${PORT}`))

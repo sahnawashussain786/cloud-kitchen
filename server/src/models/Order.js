@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema(
     customer: {
       name: { type: String, required: true, trim: true },
       phone: { type: String, required: true, trim: true },
-      address: { type: String, default: '' },
+      address: { type: String, default: "" },
     },
     items: [
       {
@@ -16,24 +16,29 @@ const orderSchema = new mongoose.Schema(
         quantity: { type: Number, required: true, min: 1 },
       },
     ],
-    fulfilment: { type: String, enum: ['delivery', 'pickup'], required: true },
-    payment: { type: String, enum: ['cash', 'online'], required: true },
-    note: { type: String, default: '' },
-  status: {
-    type: String,
-    enum: ['pending', 'accepted', 'rejected', 'completed'],
-    default: 'pending',
-  },
-  paid: { type: Boolean, default: false },
-  receiptNo: { type: String, default: '' },
-  paidAt: { type: Date, default: null },
+    fulfilment: { type: String, enum: ["delivery", "pickup"], required: true },
+    payment: { type: String, enum: ["cash", "online"], required: true },
+    note: { type: String, default: "" },
+    status: {
+      type: String,
+      enum: ["pending", "accepted", "rejected", "completed"],
+      default: "pending",
+    },
+    paid: { type: Boolean, default: false },
+    receiptNo: { type: String, default: "" },
+    paidAt: { type: Date, default: null },
     prepMinutes: { type: Number, default: null },
-    rejectReason: { type: String, default: '' },
+    rejectReason: { type: String, default: "" },
     deliveryCharge: { type: Number, default: 0 },
     subtotal: { type: Number, required: true },
     total: { type: Number, required: true },
   },
   { timestamps: true },
-)
+);
 
-export const Order = mongoose.model('Order', orderSchema)
+// Auto-delete each order 24 hours after it was created, so the kitchen starts
+// each day with a clean slate. MongoDB runs this background cleanup on a
+// rolling basis (roughly every 60 s).
+orderSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 });
+
+export const Order = mongoose.model("Order", orderSchema);
