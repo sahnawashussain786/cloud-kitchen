@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import mongoose from 'mongoose'
 import { seedIfEmpty } from './seed.js'
 import { publicRoutes, adminRoutes } from './routes/api.js'
+import { connectDb } from './db.js'
 
 const app = express()
 app.use(cors())
@@ -15,18 +15,11 @@ app.use('/api/admin', adminRoutes)
 
 const PORT = process.env.PORT || 4000
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log('Connected to MongoDB.')
-    await seedIfEmpty()
-    // Ensure the 24h auto-delete TTL index exists on orders
-    const { Order } = await import('./models/Order.js')
-    await Order.ensureIndexes()
-    app.listen(PORT, () => console.log(`Shahnaz Kitchen API listening on http://localhost:${PORT}`))
-  })
-  .catch((err) => {
-    console.error('Could not connect to MongoDB:', err.message)
-    console.error('Start MongoDB first (mongod) or set MONGO_URI in server/.env to your Atlas connection string, then restart.')
-    process.exit(1)
-  })
+await connectDb()
+await seedIfEmpty()
+
+// Ensure the 24h auto-delete TTL index exists on orders
+const { Order } = await import('./models/Order.js')
+await Order.ensureIndexes()
+
+app.listen(PORT, () => console.log(`Shahnaz Kitchen API listening on http://localhost:${PORT}`))

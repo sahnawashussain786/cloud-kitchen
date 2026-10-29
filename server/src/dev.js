@@ -2,7 +2,6 @@
 // local Mongo install. Real deployments should use "npm start" with MONGO_URI.
 import 'dotenv/config'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
 import express from 'express'
 import cors from 'cors'
 import { seedIfEmpty } from './seed.js'
@@ -19,7 +18,11 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }))
 app.use('/api', publicRoutes)
 app.use('/api/admin', adminRoutes)
 
-await mongoose.connect(mongod.getUri())
+// In memory mode, override MONGO_URI so connectDb uses the in-memory server
+process.env.MONGO_URI = mongod.getUri()
+
+import { connectDb } from './db.js'
+await connectDb()
 await seedIfEmpty()
 
 // Ensure the 24h auto-delete TTL index exists on orders
